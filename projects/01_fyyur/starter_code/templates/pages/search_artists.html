@@ -1,17 +1,32 @@
 {% extends 'layouts/main.html' %}
+
 {% block title %}Fyyur | Artists Search{% endblock %}
+
 {% block content %}
-<h3>Number of search results for "{{ search_term }}": {{ results.count }}</h3>
-<ul class="items">
-	{% for artist in results.data %}
-	<li>
-		<a href="/artists/{{ artist.id }}">
-			<i class="fas fa-users"></i>
-			<div class="item">
-				<h5>{{ artist.name }}</h5>
-			</div>
-		</a>
-	</li>
-	{% endfor %}
-</ul>
+  <h3>Number of search results for "{{ search_term }}": {{ results.total }}</h3>
+
+  {% if results.items %}
+    <ul class="items">
+      {% for artist in results.items %}
+        <li>
+          <a href="/artists/{{ artist.id }}">
+            <i class="fas fa-users" style="font-size: 24px;"></i>
+            <div class="item">
+              <h5>{{ artist.name }}</h5>
+            </div>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="pagination">
+      {% if results.has_prev %}
+        <a href="{{ url_for('search_artists', page=results.prev_num, search_term=search_term) }}">Previous</a>
+      {% endif %}
+      {% if results.has_next %}
+        <a href="{{ url_for('search_artists', page=results.next_num, search_term=search_term) }}">Next</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p>No artists found for "{{ search_term }}".</p>
+  {% endif %}
 {% endblock %}

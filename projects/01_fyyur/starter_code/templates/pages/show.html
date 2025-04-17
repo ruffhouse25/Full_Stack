@@ -1,16 +1,38 @@
 {% extends 'layouts/main.html' %}
+
 {% block title %}Show Search{% endblock %}
+
 {% block content %}
 
     <div class="page-header">
         <h1>Fyyur Search!</h1>
     </div>
-    <p class="lead"> Show Search </p>
+    <p class="lead">Search for a show</p>
 
-    <ul class="nav nav-pills">
-        <li class="active"><a>Shows</a></li>
-    </ul>
+    <form action="/search/shows" method="GET" class="form-inline">
+        <div class="form-group">
+            <label for="search_term">Search Term: </label>
+            <input type="text" name="search_term" class="form-control" placeholder="Search for a show..." required>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
-{#    Todo implement show search frontend #}
+    {% if results %}
+        <h3>Results for "{{ search_term }}":</h3>
+        <ul class="items">
+            {% for show in results %}
+            <li>
+                <a href="/shows/{{ show.id }}">
+                    <div class="item">
+                        <h5>{{ show.name }}</h5>
+                        <p>{{ show.venue_name }} - {{ show.start_time|datetime('full') }}</p>
+                    </div>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No shows found for "{{ search_term }}".</p>
+    {% endif %}
 
 {% endblock %}

@@ -1,48 +1,53 @@
-from fabric.api import local, settings, abort
-from fabric.contrib.console import confirm
+from fabric import Connection
+import sys
 
-# prepare for deployment
-
+# Prepare for deployment
+c = Connection('localhost')
 
 def test():
-    with settings(warn_only=True):
-        result = local(
-            "python test_tasks.py -v && python test_users.py -v", capture=True
+    try:
+        result = c.run(
+            "python test_tasks.py -v && python test_users.py -v", warn=True
         )
-    if result.failed and not confirm("Tests failed. Continue?"):
-        abort("Aborted at user request.")
-
+        if result.failed:
+            user_input = input("Tests failed. Continue? (yes/no): ")
+            if user_input.lower() != "yes":
+                sys.exit("Aborted at user request.")
+    except Exception as e:
+        print(f"Test execution error: {e}")
+        sys.exit("Aborted due to errors.")
 
 def commit():
-    message = raw_input("Enter a git commit message: ")
-    local("git add . && git commit -am '{}'".format(message))
-
+    message = input("Enter a git commit message: ")
+    c.run(f"git add . && git commit -am '{message}'")
 
 def push():
-    local("git push origin master")
-
+    result = c.run("git push origin master", warn=True)
+    if result.failed:
+        sys.exit("Git push failed, aborting deployment.")
 
 def prepare():
     test()
     commit()
     push()
 
-# deploy to heroku
-
-
+# Deploy to Heroku
 def pull():
-    local("git pull origin master")
-
+    result = c.run("git pull origin master", warn=True)
+    if result.failed:
+        sys.exit("Git pull failed, aborting deployment.")
 
 def heroku():
-    local("git push heroku master")
-
+    result = c.run("git push heroku master", warn=True)
+    if result.failed:
+        sys.exit("Heroku push failed, aborting deployment.")
 
 def heroku_test():
-    local(
-        "heroku run python test_tasks.py -v && heroku run python test_users.py -v"
+    result = c.run(
+        "heroku run python test_tasks.py -v && heroku run python test_users.py -v", warn=True
     )
-
+    if result.failed:
+        sys.exit("Heroku tests failed, aborting deployment.")
 
 def deploy():
     pull()
@@ -51,8 +56,6 @@ def deploy():
     heroku()
     heroku_test()
 
-# rollback
-
-
+# Rollback
 def rollback():
-    local("heroku rollback")
+    c.run("heroku rollback")

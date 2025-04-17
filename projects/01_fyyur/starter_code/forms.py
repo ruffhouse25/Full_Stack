@@ -1,96 +1,95 @@
 from datetime import datetime
-from flask_wtf import Form
-from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField
-from wtforms.validators import DataRequired, AnyOf, URL
+from flask_wtf import FlaskForm
+from wtforms import StringField, SelectField, SelectMultipleField, DateTimeField, BooleanField, TextAreaField
+from wtforms.validators import DataRequired, URL, Optional
 
-class ShowForm(Form):
+class ShowForm(FlaskForm):
     artist_id = StringField(
-        'artist_id'
+        'Artist ID'
     )
     venue_id = StringField(
-        'venue_id'
+        'Venue ID'
     )
     start_time = DateTimeField(
-        'start_time',
+        'Start Time',
         validators=[DataRequired()],
-        default= datetime.today()
+        default=datetime.today()
     )
 
-class VenueForm(Form):
+class VenueForm(FlaskForm):
     name = StringField(
-        'name', validators=[DataRequired()]
+        'Venue Name', validators=[DataRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'City', validators=[DataRequired()]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
-        choices=[
-            ('AL', 'AL'),
-            ('AK', 'AK'),
-            ('AZ', 'AZ'),
-            ('AR', 'AR'),
-            ('CA', 'CA'),
-            ('CO', 'CO'),
-            ('CT', 'CT'),
-            ('DE', 'DE'),
-            ('DC', 'DC'),
-            ('FL', 'FL'),
-            ('GA', 'GA'),
-            ('HI', 'HI'),
-            ('ID', 'ID'),
-            ('IL', 'IL'),
-            ('IN', 'IN'),
-            ('IA', 'IA'),
-            ('KS', 'KS'),
-            ('KY', 'KY'),
-            ('LA', 'LA'),
-            ('ME', 'ME'),
-            ('MT', 'MT'),
-            ('NE', 'NE'),
-            ('NV', 'NV'),
-            ('NH', 'NH'),
-            ('NJ', 'NJ'),
-            ('NM', 'NM'),
-            ('NY', 'NY'),
-            ('NC', 'NC'),
-            ('ND', 'ND'),
-            ('OH', 'OH'),
-            ('OK', 'OK'),
-            ('OR', 'OR'),
-            ('MD', 'MD'),
-            ('MA', 'MA'),
-            ('MI', 'MI'),
-            ('MN', 'MN'),
-            ('MS', 'MS'),
-            ('MO', 'MO'),
-            ('PA', 'PA'),
-            ('RI', 'RI'),
-            ('SC', 'SC'),
-            ('SD', 'SD'),
-            ('TN', 'TN'),
-            ('TX', 'TX'),
-            ('UT', 'UT'),
-            ('VT', 'VT'),
-            ('VA', 'VA'),
-            ('WA', 'WA'),
-            ('WV', 'WV'),
-            ('WI', 'WI'),
-            ('WY', 'WY'),
+        'State', validators=[DataRequired()],
+        choices=[  # Consider using dynamic state list or updating as needed
+            ('AL', 'Alabama'),
+            ('AK', 'Alaska'),
+            ('AZ', 'Arizona'),
+            ('AR', 'Arkansas'),
+            ('CA', 'California'),
+            ('CO', 'Colorado'),
+            ('CT', 'Connecticut'),
+            ('DE', 'Delaware'),
+            ('DC', 'District of Columbia'),
+            ('FL', 'Florida'),
+            ('GA', 'Georgia'),
+            ('HI', 'Hawaii'),
+            ('ID', 'Idaho'),
+            ('IL', 'Illinois'),
+            ('IN', 'Indiana'),
+            ('IA', 'Iowa'),
+            ('KS', 'Kansas'),
+            ('KY', 'Kentucky'),
+            ('LA', 'Louisiana'),
+            ('ME', 'Maine'),
+            ('MT', 'Montana'),
+            ('NE', 'Nebraska'),
+            ('NV', 'Nevada'),
+            ('NH', 'New Hampshire'),
+            ('NJ', 'New Jersey'),
+            ('NM', 'New Mexico'),
+            ('NY', 'New York'),
+            ('NC', 'North Carolina'),
+            ('ND', 'North Dakota'),
+            ('OH', 'Ohio'),
+            ('OK', 'Oklahoma'),
+            ('OR', 'Oregon'),
+            ('MD', 'Maryland'),
+            ('MA', 'Massachusetts'),
+            ('MI', 'Michigan'),
+            ('MN', 'Minnesota'),
+            ('MS', 'Mississippi'),
+            ('MO', 'Missouri'),
+            ('PA', 'Pennsylvania'),
+            ('RI', 'Rhode Island'),
+            ('SC', 'South Carolina'),
+            ('SD', 'South Dakota'),
+            ('TN', 'Tennessee'),
+            ('TX', 'Texas'),
+            ('UT', 'Utah'),
+            ('VT', 'Vermont'),
+            ('VA', 'Virginia'),
+            ('WA', 'Washington'),
+            ('WV', 'West Virginia'),
+            ('WI', 'Wisconsin'),
+            ('WY', 'Wyoming'),
         ]
     )
     address = StringField(
-        'address', validators=[DataRequired()]
+        'Address', validators=[DataRequired()]
     )
     phone = StringField(
-        'phone'
+        'Phone', validators=[Optional()]
     )
     image_link = StringField(
-        'image_link'
+        'Image Link', validators=[Optional(), URL()]
     )
     genres = SelectMultipleField(
-        # TODO implement enum restriction
-        'genres', validators=[DataRequired()],
+        'Genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -114,92 +113,89 @@ class VenueForm(Form):
         ]
     )
     facebook_link = StringField(
-        'facebook_link', validators=[URL()]
+        'Facebook Link', validators=[Optional(), URL()]
     )
     website_link = StringField(
-        'website_link'
+        'Website Link', validators=[Optional(), URL()]
+    )
+    seeking_talent = BooleanField(
+        'Looking for Talent?'
+    )
+    seeking_description = TextAreaField(
+        'Seeking Description', validators=[Optional()]
     )
 
-    seeking_talent = BooleanField( 'seeking_talent' )
-
-    seeking_description = StringField(
-        'seeking_description'
-    )
-
-
-
-class ArtistForm(Form):
+class ArtistForm(FlaskForm):
     name = StringField(
-        'name', validators=[DataRequired()]
+        'Artist Name', validators=[DataRequired()]
     )
     city = StringField(
-        'city', validators=[DataRequired()]
+        'City', validators=[DataRequired()]
     )
     state = SelectField(
-        'state', validators=[DataRequired()],
+        'State', validators=[DataRequired()],
         choices=[
-            ('AL', 'AL'),
-            ('AK', 'AK'),
-            ('AZ', 'AZ'),
-            ('AR', 'AR'),
-            ('CA', 'CA'),
-            ('CO', 'CO'),
-            ('CT', 'CT'),
-            ('DE', 'DE'),
-            ('DC', 'DC'),
-            ('FL', 'FL'),
-            ('GA', 'GA'),
-            ('HI', 'HI'),
-            ('ID', 'ID'),
-            ('IL', 'IL'),
-            ('IN', 'IN'),
-            ('IA', 'IA'),
-            ('KS', 'KS'),
-            ('KY', 'KY'),
-            ('LA', 'LA'),
-            ('ME', 'ME'),
-            ('MT', 'MT'),
-            ('NE', 'NE'),
-            ('NV', 'NV'),
-            ('NH', 'NH'),
-            ('NJ', 'NJ'),
-            ('NM', 'NM'),
-            ('NY', 'NY'),
-            ('NC', 'NC'),
-            ('ND', 'ND'),
-            ('OH', 'OH'),
-            ('OK', 'OK'),
-            ('OR', 'OR'),
-            ('MD', 'MD'),
-            ('MA', 'MA'),
-            ('MI', 'MI'),
-            ('MN', 'MN'),
-            ('MS', 'MS'),
-            ('MO', 'MO'),
-            ('PA', 'PA'),
-            ('RI', 'RI'),
-            ('SC', 'SC'),
-            ('SD', 'SD'),
-            ('TN', 'TN'),
-            ('TX', 'TX'),
-            ('UT', 'UT'),
-            ('VT', 'VT'),
-            ('VA', 'VA'),
-            ('WA', 'WA'),
-            ('WV', 'WV'),
-            ('WI', 'WI'),
-            ('WY', 'WY'),
+            ('AL', 'Alabama'),
+            ('AK', 'Alaska'),
+            ('AZ', 'Arizona'),
+            ('AR', 'Arkansas'),
+            ('CA', 'California'),
+            ('CO', 'Colorado'),
+            ('CT', 'Connecticut'),
+            ('DE', 'Delaware'),
+            ('DC', 'District of Columbia'),
+            ('FL', 'Florida'),
+            ('GA', 'Georgia'),
+            ('HI', 'Hawaii'),
+            ('ID', 'Idaho'),
+            ('IL', 'Illinois'),
+            ('IN', 'Indiana'),
+            ('IA', 'Iowa'),
+            ('KS', 'Kansas'),
+            ('KY', 'Kentucky'),
+            ('LA', 'Louisiana'),
+            ('ME', 'Maine'),
+            ('MT', 'Montana'),
+            ('NE', 'Nebraska'),
+            ('NV', 'Nevada'),
+            ('NH', 'New Hampshire'),
+            ('NJ', 'New Jersey'),
+            ('NM', 'New Mexico'),
+            ('NY', 'New York'),
+            ('NC', 'North Carolina'),
+            ('ND', 'North Dakota'),
+            ('OH', 'Ohio'),
+            ('OK', 'Oklahoma'),
+            ('OR', 'Oregon'),
+            ('MD', 'Maryland'),
+            ('MA', 'Massachusetts'),
+            ('MI', 'Michigan'),
+            ('MN', 'Minnesota'),
+            ('MS', 'Mississippi'),
+            ('MO', 'Missouri'),
+            ('PA', 'Pennsylvania'),
+            ('RI', 'Rhode Island'),
+            ('SC', 'South Carolina'),
+            ('SD', 'South Dakota'),
+            ('TN', 'Tennessee'),
+            ('TX', 'Texas'),
+            ('UT', 'Utah'),
+            ('VT', 'Vermont'),
+            ('VA', 'Virginia'),
+            ('WA', 'Washington'),
+            ('WV', 'West Virginia'),
+            ('WI', 'Wisconsin'),
+            ('WY', 'Wyoming'),
         ]
     )
     phone = StringField(
-        # TODO implement validation logic for phone 
-        'phone'
+        'Phone', validators=[Optional()]
     )
     image_link = StringField(
-        'image_link'
+        'Image Link', validators=[Optional(), URL()]
     )
     genres = SelectMultipleField(
-        'genres', validators=[DataRequired()],
+        'Genres', validators=[DataRequired()],
         choices=[
             ('Alternative', 'Alternative'),
             ('Blues', 'Blues'),
@@ -221,19 +217,16 @@ class ArtistForm(Form):
             ('Soul', 'Soul'),
             ('Other', 'Other'),
         ]
-     )
+    )
     facebook_link = StringField(
-        # TODO implement enum restriction
-        'facebook_link', validators=[URL()]
-     )
-
+        'Facebook Link', validators=[Optional(), URL()]
+    )
     website_link = StringField(
-        'website_link'
-     )
-
-    seeking_venue = BooleanField( 'seeking_venue' )
-
-    seeking_description = StringField(
-            'seeking_description'
-     )
-
+        'Website Link', validators=[Optional(), URL()]
+    )
+    seeking_venue = BooleanField(
+        'Looking for Venue?'
+    )
+    seeking_description = TextAreaField(
+        'Seeking Description', validators=[Optional()]
+    )
